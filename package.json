@@ -1,0 +1,21 @@
+{
+  "name": "carrot_platform",
+  "version": "0.1.0",
+  "description": "a platform game",
+  "main": "src/game.js",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack-dev-server --port=4578"
+  },
+  "author": "Mohammad Javad Ghasemy",
+  "license": "MIT",
+  "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+  "devDependencies": {
+    "webpack": "^4.29.3",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.1.14",
+    "raw-loader": "^1.0.0"
+  },
+  "dependencies": {
+  }
+}

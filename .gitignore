@@ -11,5 +11,5 @@ Thumbs.db
 node_modules/
 
 # Build
-build/
+# build/
 /npm-debug.log

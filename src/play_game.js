@@ -23,44 +23,46 @@ class play_game extends Phaser.Scene
 
 	create()
 	{
-		this.cameras.main.setBounds(0, 0, 1920 * 2, 600);
-		this.physics.world.setBounds(0, 0, 1920 * 2, 600);
+		this.cameras.main.setBounds(0, 0, 1920 * 2, this.sys.game.config.height);
+		this.physics.world.setBounds(0, 0, 1920 * 2, this.sys.game.config.height);
 
 		this.finish = this.physics.add.staticGroup();
-		this.finish.create(3600, 480, 'out_way');
+		this.finish.create(3600, this.sys.game.config.height - 150, 'out_way');
 
 		this.holes = this.physics.add.staticGroup();
-		this.holes.create(850, 590, 'hole');
-		this.holes.create(1750, 590, 'hole');
-		this.holes.create(1850, 590, 'hole');
+		this.holes.create(850, this.sys.game.config.height - 10, 'hole');
+		this.holes.create(1750, this.sys.game.config.height - 10, 'hole');
+		this.holes.create(1850, this.sys.game.config.height - 10, 'hole');
 
 		this.platforms = this.physics.add.staticGroup();
-		this.platforms.create(400, 568, 'ground');
-		this.platforms.create(1300, 568, 'ground');
-		this.platforms.create(2280, 568, 'ground');
-		this.platforms.create(3080, 568, 'ground');
-		this.platforms.create(3880, 568, 'ground');
-		this.platforms.create(4580, 568, 'ground');
+		this.platforms.create(400, this.sys.game.config.height - 50, 'ground');
+		this.platforms.create(1300, this.sys.game.config.height - 50, 'ground');
+		this.platforms.create(2280, this.sys.game.config.height - 50, 'ground');
+		this.platforms.create(3080, this.sys.game.config.height - 50, 'ground');
+		this.platforms.create(3880, this.sys.game.config.height - 50, 'ground');
+		this.platforms.create(4580, this.sys.game.config.height - 50, 'ground');
 
-		this.enemys = this.physics.add.group();
-		this.enemys.add(new this.Enemy(this, 400, 600), true);
-		this.enemys.add(new this.Enemy(this, 1100, 1300), true);
-		this.enemys.add(new this.Enemy(this, 1250, 1600), true);
-		this.enemys.add(new this.Enemy(this, 3000, 3300), true);
+		const enemy_height = this.sys.game.config.height - 119;
+		this.enemys        = this.physics.add.group({ allowGravity: false });
+		this.enemys.add(new this.Enemy(this, 400, 600, enemy_height), true);
+		this.enemys.add(new this.Enemy(this, 1100, 1300, enemy_height), true);
+		this.enemys.add(new this.Enemy(this, 1250, 1600, enemy_height), true);
+		this.enemys.add(new this.Enemy(this, 3000, 3300, enemy_height), true);
 		// this.platforms.create(700, 492, 'platform');
 		// this.platforms.create(100, 400, 'platform');
 
-		this.player = this.physics.add.image(250, 450, 'rabbit').setActive().setVelocity(0, 0);
+		this.player = this.physics.add.image(250, this.sys.game.config.height - 140, 'rabbit').setActive().setVelocity(0, 0);
 		this.player.setBounce(0.2);
 		this.player.setCollideWorldBounds(true);
 
-		this.cursors = this.input.keyboard.createCursorKeys();
+		// this.cursors = this.input.keyboard.createCursorKeys();
 
 		this.physics.add.collider(this.player, this.platforms);
 		this.physics.add.collider(this.enemys, this.platforms);
-		this.physics.add.overlap(this.player, this.enemys, this.lose, null, this);
 
+		this.physics.add.overlap(this.player, this.enemys, this.lose, null, this);
 		this.physics.add.overlap(this.player, this.finish, this.win, null, this);
+		this.physics.add.overlap(this.player, this.holes, this.lose, null, this);
 
 
 		this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
@@ -101,7 +103,7 @@ class play_game extends Phaser.Scene
 	{
 		alert("ooops you lose");
 		this.player.x = 250;
-		this.player.y = 450;
+		this.player.y = this.sys.game.config.height - 140;
 
 
 	}
@@ -110,7 +112,7 @@ class play_game extends Phaser.Scene
 	{
 		alert("you win");
 		this.player.x = 250;
-		this.player.y = 450;
+		this.player.y = this.sys.game.config.height - 140;
 
 
 	}
@@ -126,11 +128,11 @@ class play_game extends Phaser.Scene
 		// console.log(this.input.x+":::::"+this.input.y);
 
 		// console.log(this.player.y);
-		if ( this.player.y > 560 )
-		{
-			console.log("lose");
-			this.lose();
-		}
+		// if ( this.player.y > 560 )
+		// {
+		// 	console.log("lose");
+		// 	this.lose();
+		// }
 		if ( this.carrot.x === -10 )
 		{
 			this.player.setVelocityX(0);

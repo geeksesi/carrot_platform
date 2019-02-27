@@ -12,7 +12,8 @@ class play_game extends Phaser.Scene
 
 	preload()
 	{
-		this.load.image('out_way', 'assets/carrot.png');
+		this.load.image('out_way', 'assets/finish.png');
+		this.load.image('carrot', 'assets/carrot.png');
 		this.load.image('rabbit', 'assets/rabbit.png');
 		this.load.image('enemy', 'assets/enemy.png');
 		this.load.image('ground', 'assets/ground.jpg');
@@ -64,9 +65,35 @@ class play_game extends Phaser.Scene
 
 		this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
 
-		// this.physics.add.overlap(this.player, this.platforms)
-		// holes.create(1750, 590, 'hole');
-		// this.physics.add.overlap(this.player, holes, );
+		this.carrot = this.add.image(-10, -10, 'carrot');
+		this.input.on('pointerdown', (pointer) =>
+		{
+			this.carrot.x = pointer.worldX;
+			this.carrot.y = pointer.worldY;
+		});
+		// this.carrot = this.add.image(0, 0, 'carrot').setInteractive();
+		this.input.on('pointerdown', (pointer) =>
+		{
+			this.is_down  = true;
+			this.carrot.x = pointer.worldX;
+			this.carrot.y = pointer.worldY;
+		});
+
+		this.input.on('pointermove', (pointer) =>
+		{
+			if ( this.is_down )
+			{
+				this.carrot.x = pointer.worldX;
+				this.carrot.y = pointer.worldY;
+			}
+		});
+
+		this.input.on('pointerup', () =>
+		{
+			this.is_down  = false;
+			this.carrot.x = -10;
+			this.carrot.y = -10;
+		});
 	}
 
 
@@ -90,33 +117,42 @@ class play_game extends Phaser.Scene
 
 	update()
 	{
+		let pointer = this.input.activePointer.positionToCamera(this.cameras.main);
+		if ( this.is_down )
+		{
+			this.carrot.x = pointer.x;
+			this.carrot.y = pointer.y;
+		}
+		// console.log(this.input.x+":::::"+this.input.y);
+
 		// console.log(this.player.y);
 		if ( this.player.y > 560 )
 		{
 			console.log("lose");
 			this.lose();
 		}
-
-		if ( this.cursors.left.isDown )
+		if ( this.carrot.x === -10 )
 		{
-			this.player.setVelocityX(-160);
+			this.player.setVelocityX(0);
+		}
+		else if ( this.carrot.x - 45 > this.player.x )
+		{
+			this.player.setVelocityX(250);
 
 			// this.player.anims.play('left', true);
 		}
-		else if ( this.cursors.right.isDown )
+		else if ( this.carrot.x + 45 < this.player.x )
 		{
-			this.player.setVelocityX(500);
+			this.player.setVelocityX(-240);
 
 			// this.player.anims.play('right', true);
 		}
-		else
+
+		if ( this.carrot.y === -10 )
 		{
-			this.player.setVelocityX(0);
-
-			// this.player.anims.play('turn');
+			// this.player.setVelocityY(0);
 		}
-
-		if ( this.cursors.up.isDown && this.player.body.touching.down )
+		else if ( this.carrot.y + 80 < this.player.y && this.player.body.touching.down )
 		{
 			this.player.setVelocityY(-330);
 		}

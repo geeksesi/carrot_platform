@@ -149,7 +149,7 @@ class play_game extends Phaser.Scene
 		{
 			// this.player.setVelocityY(0);
 		}
-		else if ( this.carrot.y + (this.game.config.height * 20 / 100) < this.player.y && this.player.body.touching.down )
+		else if ( this.carrot.y + (this.game.config.height * 35 / 100) < this.player.y && this.player.body.touching.down )
 		{
 			this.player.setVelocityY(-330);
 		}

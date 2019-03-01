@@ -68,27 +68,22 @@ class play_game extends Phaser.Scene
 		this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
 
 		this.carrot = this.add.image(-10, -10, 'carrot');
-		this.input.on('pointerdown', (pointer) =>
-		{
-			this.carrot.x = pointer.worldX;
-			this.carrot.y = pointer.worldY;
-		});
 		// this.carrot = this.add.image(0, 0, 'carrot').setInteractive();
 		this.input.on('pointerdown', (pointer) =>
 		{
 			this.is_down  = true;
 			this.carrot.x = pointer.worldX;
-			this.carrot.y = pointer.worldY;
+			this.carrot.y = pointer.worldY + (this.carrot.height / 2);
 		});
 
-		this.input.on('pointermove', (pointer) =>
-		{
-			if ( this.is_down )
-			{
-				this.carrot.x = pointer.worldX;
-				this.carrot.y = pointer.worldY;
-			}
-		});
+		// this.input.on('pointermove', (pointer) =>
+		// {
+		// 	if ( this.is_down )
+		// 	{
+		// 		this.carrot.x = pointer.worldX + (this.carrot.height / 2);
+		// 		this.carrot.y = pointer.worldY;
+		// 	}
+		// });
 
 		this.input.on('pointerup', () =>
 		{
@@ -123,7 +118,7 @@ class play_game extends Phaser.Scene
 		if ( this.is_down )
 		{
 			this.carrot.x = pointer.x;
-			this.carrot.y = pointer.y;
+			this.carrot.y = pointer.y + (this.carrot.height / 2);
 		}
 		// console.log(this.input.x+":::::"+this.input.y);
 
@@ -154,7 +149,7 @@ class play_game extends Phaser.Scene
 		{
 			// this.player.setVelocityY(0);
 		}
-		else if ( this.carrot.y + 80 < this.player.y && this.player.body.touching.down )
+		else if ( this.carrot.y + (this.game.config.height * 20 / 100) < this.player.y && this.player.body.touching.down )
 		{
 			this.player.setVelocityY(-330);
 		}

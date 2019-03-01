@@ -15,3 +15,12 @@ Run next commands in your terminal:
 | `yarn install` | Install dependencies and launch browser with examples.|
 | `yarn start` | Launch browser to show the examples. <br> Press `Ctrl + c` to kill **http-server** process. |
 =======
+
+## Todo :
+Check : `ToDo.md` 
+
+## you can play it on :
+[Play this game ](https://geeksesi.github.io/carrot_platform)
+
+## more
+nothing more :D

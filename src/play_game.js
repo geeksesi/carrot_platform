@@ -1,4 +1,5 @@
-import Enemy from './Enemy';
+import Enemy             from './Enemy';
+import { rabbit_update } from './rabbit';
 
 
 class play_game extends Phaser.Scene
@@ -23,6 +24,9 @@ class play_game extends Phaser.Scene
 
 	create()
 	{
+		this.is_down  = false;
+		this.is_fly   = false;
+		this.fly_time = 80;
 		this.cameras.main.setBounds(0, 0, 1920 * 2, this.sys.game.config.height);
 		this.physics.world.setBounds(0, 0, 1920 * 2, this.sys.game.config.height);
 
@@ -35,15 +39,15 @@ class play_game extends Phaser.Scene
 		this.holes.create(1850, this.sys.game.config.height - 10, 'hole');
 
 		this.platforms = this.physics.add.staticGroup();
-		this.platforms.create(400, this.sys.game.config.height - 50, 'ground');
-		this.platforms.create(1300, this.sys.game.config.height - 50, 'ground');
-		this.platforms.create(2280, this.sys.game.config.height - 50, 'ground');
-		this.platforms.create(3080, this.sys.game.config.height - 50, 'ground');
-		this.platforms.create(3880, this.sys.game.config.height - 50, 'ground');
-		this.platforms.create(4580, this.sys.game.config.height - 50, 'ground');
+		this.platforms.create(400, this.sys.game.config.height - 20, 'ground');
+		this.platforms.create(1300, this.sys.game.config.height - 20, 'ground');
+		this.platforms.create(2280, this.sys.game.config.height - 20, 'ground');
+		this.platforms.create(3080, this.sys.game.config.height - 20, 'ground');
+		this.platforms.create(3880, this.sys.game.config.height - 20, 'ground');
+		this.platforms.create(4580, this.sys.game.config.height - 20, 'ground');
 
-		const enemy_height = this.sys.game.config.height - 119;
-		this.enemys        = this.physics.add.group({ allowGravity: false });
+		const enemy_height = this.sys.game.config.height - 89;
+		this.enemys        = this.physics.add.group({ allowGravity : false });
 		this.enemys.add(new this.Enemy(this, 400, 600, enemy_height), true);
 		this.enemys.add(new this.Enemy(this, 1100, 1300, enemy_height), true);
 		this.enemys.add(new this.Enemy(this, 1250, 1600, enemy_height), true);
@@ -51,21 +55,21 @@ class play_game extends Phaser.Scene
 		// this.platforms.create(700, 492, 'platform');
 		// this.platforms.create(100, 400, 'platform');
 
-		this.player = this.physics.add.image(250, this.sys.game.config.height - 140, 'rabbit').setActive().setVelocity(0, 0);
-		this.player.setBounce(0.2);
-		this.player.setCollideWorldBounds(true);
+		this.rabbit = this.physics.add.image(250, this.sys.game.config.height - 140, 'rabbit').setActive().setVelocity(0, 0);
+		this.rabbit.setBounce(0.2);
+		this.rabbit.setCollideWorldBounds(true);
 
 		// this.cursors = this.input.keyboard.createCursorKeys();
 
-		this.physics.add.collider(this.player, this.platforms);
+		this.physics.add.collider(this.rabbit, this.platforms);
 		this.physics.add.collider(this.enemys, this.platforms);
 
-		this.physics.add.overlap(this.player, this.enemys, this.lose, null, this);
-		this.physics.add.overlap(this.player, this.finish, this.win, null, this);
-		this.physics.add.overlap(this.player, this.holes, this.lose, null, this);
+		this.physics.add.overlap(this.rabbit, this.enemys, this.lose, null, this);
+		this.physics.add.overlap(this.rabbit, this.finish, this.win, null, this);
+		this.physics.add.overlap(this.rabbit, this.holes, this.lose, null, this);
 
 
-		this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
+		this.cameras.main.startFollow(this.rabbit, true, 0.05, 0.05);
 
 		this.carrot = this.add.image(-10, -10, 'carrot');
 		// this.carrot = this.add.image(0, 0, 'carrot').setInteractive();
@@ -76,18 +80,10 @@ class play_game extends Phaser.Scene
 			this.carrot.y = pointer.worldY + (this.carrot.height / 2);
 		});
 
-		// this.input.on('pointermove', (pointer) =>
-		// {
-		// 	if ( this.is_down )
-		// 	{
-		// 		this.carrot.x = pointer.worldX + (this.carrot.height / 2);
-		// 		this.carrot.y = pointer.worldY;
-		// 	}
-		// });
-
 		this.input.on('pointerup', () =>
 		{
 			this.is_down  = false;
+			this.is_fly   = false;
 			this.carrot.x = -10;
 			this.carrot.y = -10;
 		});
@@ -97,62 +93,40 @@ class play_game extends Phaser.Scene
 	lose()
 	{
 		alert("ooops you lose");
-		this.player.x = 250;
-		this.player.y = this.sys.game.config.height - 140;
-
+		this.rabbit.x = 250;
+		this.rabbit.y = this.sys.game.config.height - 140;
+		this.is_fly   = true;
 
 	}
 
 	win()
 	{
 		alert("you win");
-		this.player.x = 250;
-		this.player.y = this.sys.game.config.height - 140;
-
+		this.rabbit.x = 250;
+		this.rabbit.y = this.sys.game.config.height - 140;
+		this.is_fly   = true;
 
 	}
 
 	update()
 	{
+
+		if ( !this.is_fly && this.fly_time < 80 )
+		{
+			this.fly_time += 1;
+			// console.log("add time")
+		}
+		rabbit_update(this);
+
+
 		let pointer = this.input.activePointer.positionToCamera(this.cameras.main);
 		if ( this.is_down )
 		{
 			this.carrot.x = pointer.x;
 			this.carrot.y = pointer.y + (this.carrot.height / 2);
 		}
-		// console.log(this.input.x+":::::"+this.input.y);
 
-		// console.log(this.player.y);
-		// if ( this.player.y > 560 )
-		// {
-		// 	console.log("lose");
-		// 	this.lose();
-		// }
-		if ( this.carrot.x === -10 )
-		{
-			this.player.setVelocityX(0);
-		}
-		else if ( this.carrot.x - 45 > this.player.x )
-		{
-			this.player.setVelocityX(250);
 
-			// this.player.anims.play('left', true);
-		}
-		else if ( this.carrot.x + 45 < this.player.x )
-		{
-			this.player.setVelocityX(-240);
-
-			// this.player.anims.play('right', true);
-		}
-
-		if ( this.carrot.y === -10 )
-		{
-			// this.player.setVelocityY(0);
-		}
-		else if ( this.carrot.y + (this.game.config.height * 35 / 100) < this.player.y && this.player.body.touching.down )
-		{
-			this.player.setVelocityY(-330);
-		}
 	}
 }
 

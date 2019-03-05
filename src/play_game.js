@@ -1,5 +1,5 @@
-import Enemy from './Enemy';
-import {rabbit_update} from './rabbit';
+import Enemy             from './Enemy';
+import { rabbit_update } from './rabbit';
 
 
 class play_game extends Phaser.Scene
@@ -24,6 +24,9 @@ class play_game extends Phaser.Scene
 
 	create()
 	{
+		this.is_down  = false;
+		this.is_fly   = false;
+		this.fly_time = 80;
 		this.cameras.main.setBounds(0, 0, 1920 * 2, this.sys.game.config.height);
 		this.physics.world.setBounds(0, 0, 1920 * 2, this.sys.game.config.height);
 
@@ -36,15 +39,15 @@ class play_game extends Phaser.Scene
 		this.holes.create(1850, this.sys.game.config.height - 10, 'hole');
 
 		this.platforms = this.physics.add.staticGroup();
-		this.platforms.create(400, this.sys.game.config.height - 50, 'ground');
-		this.platforms.create(1300, this.sys.game.config.height - 50, 'ground');
-		this.platforms.create(2280, this.sys.game.config.height - 50, 'ground');
-		this.platforms.create(3080, this.sys.game.config.height - 50, 'ground');
-		this.platforms.create(3880, this.sys.game.config.height - 50, 'ground');
-		this.platforms.create(4580, this.sys.game.config.height - 50, 'ground');
+		this.platforms.create(400, this.sys.game.config.height - 20, 'ground');
+		this.platforms.create(1300, this.sys.game.config.height - 20, 'ground');
+		this.platforms.create(2280, this.sys.game.config.height - 20, 'ground');
+		this.platforms.create(3080, this.sys.game.config.height - 20, 'ground');
+		this.platforms.create(3880, this.sys.game.config.height - 20, 'ground');
+		this.platforms.create(4580, this.sys.game.config.height - 20, 'ground');
 
-		const enemy_height = this.sys.game.config.height - 119;
-		this.enemys        = this.physics.add.group({ allowGravity: false });
+		const enemy_height = this.sys.game.config.height - 89;
+		this.enemys        = this.physics.add.group({ allowGravity : false });
 		this.enemys.add(new this.Enemy(this, 400, 600, enemy_height), true);
 		this.enemys.add(new this.Enemy(this, 1100, 1300, enemy_height), true);
 		this.enemys.add(new this.Enemy(this, 1250, 1600, enemy_height), true);
@@ -77,18 +80,10 @@ class play_game extends Phaser.Scene
 			this.carrot.y = pointer.worldY + (this.carrot.height / 2);
 		});
 
-		// this.input.on('pointermove', (pointer) =>
-		// {
-		// 	if ( this.is_down )
-		// 	{
-		// 		this.carrot.x = pointer.worldX + (this.carrot.height / 2);
-		// 		this.carrot.y = pointer.worldY;
-		// 	}
-		// });
-
 		this.input.on('pointerup', () =>
 		{
 			this.is_down  = false;
+			this.is_fly   = false;
 			this.carrot.x = -10;
 			this.carrot.y = -10;
 		});
@@ -100,7 +95,7 @@ class play_game extends Phaser.Scene
 		alert("ooops you lose");
 		this.rabbit.x = 250;
 		this.rabbit.y = this.sys.game.config.height - 140;
-
+		this.is_fly   = true;
 
 	}
 
@@ -109,13 +104,18 @@ class play_game extends Phaser.Scene
 		alert("you win");
 		this.rabbit.x = 250;
 		this.rabbit.y = this.sys.game.config.height - 140;
-
+		this.is_fly   = true;
 
 	}
 
 	update()
 	{
 
+		if ( !this.is_fly && this.fly_time < 80 )
+		{
+			this.fly_time += 1;
+			// console.log("add time")
+		}
 		rabbit_update(this);
 
 
@@ -125,14 +125,7 @@ class play_game extends Phaser.Scene
 			this.carrot.x = pointer.x;
 			this.carrot.y = pointer.y + (this.carrot.height / 2);
 		}
-		// console.log(this.input.x+":::::"+this.input.y);
 
-		// console.log(this.rabbit.y);
-		// if ( this.rabbit.y > 560 )
-		// {
-		// 	console.log("lose");
-		// 	this.lose();
-		// }
 
 	}
 }

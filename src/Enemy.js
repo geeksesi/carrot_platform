@@ -4,13 +4,15 @@ const Enemy = Phaser.Class({
 	initialize :
 		function (scene, from_x, to_x, height)
 		{
-			Phaser.Physics.Arcade.Sprite.call(this, scene, from_x, height, 'enemy');
+			Phaser.Physics.Arcade.Sprite.call(this, scene, from_x, 35, 'enemy');
 			this.from_x  = from_x;
 			this.to_x    = to_x;
 			this.way     = 1;
 			this.x_place = from_x;
-			this.height = height;
-			this.setPosition(this.x_place, this.height);
+			this.height = 35;
+			this.y_loc = height;
+			this.setPosition(this.x_place, this.y_loc);
+
 
 		},
 
@@ -34,7 +36,7 @@ const Enemy = Phaser.Class({
 				}
 			}
 			// console.log("hello");
-			this.setPosition(this.x_place, this.height);
+			this.setPosition(this.x_place, this.y_loc);
 		},
 
 });

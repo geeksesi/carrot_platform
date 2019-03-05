@@ -1,4 +1,5 @@
 import Enemy from './Enemy';
+import {rabbit_update} from './rabbit';
 
 
 class play_game extends Phaser.Scene
@@ -51,21 +52,21 @@ class play_game extends Phaser.Scene
 		// this.platforms.create(700, 492, 'platform');
 		// this.platforms.create(100, 400, 'platform');
 
-		this.player = this.physics.add.image(250, this.sys.game.config.height - 140, 'rabbit').setActive().setVelocity(0, 0);
-		this.player.setBounce(0.2);
-		this.player.setCollideWorldBounds(true);
+		this.rabbit = this.physics.add.image(250, this.sys.game.config.height - 140, 'rabbit').setActive().setVelocity(0, 0);
+		this.rabbit.setBounce(0.2);
+		this.rabbit.setCollideWorldBounds(true);
 
 		// this.cursors = this.input.keyboard.createCursorKeys();
 
-		this.physics.add.collider(this.player, this.platforms);
+		this.physics.add.collider(this.rabbit, this.platforms);
 		this.physics.add.collider(this.enemys, this.platforms);
 
-		this.physics.add.overlap(this.player, this.enemys, this.lose, null, this);
-		this.physics.add.overlap(this.player, this.finish, this.win, null, this);
-		this.physics.add.overlap(this.player, this.holes, this.lose, null, this);
+		this.physics.add.overlap(this.rabbit, this.enemys, this.lose, null, this);
+		this.physics.add.overlap(this.rabbit, this.finish, this.win, null, this);
+		this.physics.add.overlap(this.rabbit, this.holes, this.lose, null, this);
 
 
-		this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
+		this.cameras.main.startFollow(this.rabbit, true, 0.05, 0.05);
 
 		this.carrot = this.add.image(-10, -10, 'carrot');
 		// this.carrot = this.add.image(0, 0, 'carrot').setInteractive();
@@ -97,8 +98,8 @@ class play_game extends Phaser.Scene
 	lose()
 	{
 		alert("ooops you lose");
-		this.player.x = 250;
-		this.player.y = this.sys.game.config.height - 140;
+		this.rabbit.x = 250;
+		this.rabbit.y = this.sys.game.config.height - 140;
 
 
 	}
@@ -106,14 +107,18 @@ class play_game extends Phaser.Scene
 	win()
 	{
 		alert("you win");
-		this.player.x = 250;
-		this.player.y = this.sys.game.config.height - 140;
+		this.rabbit.x = 250;
+		this.rabbit.y = this.sys.game.config.height - 140;
 
 
 	}
 
 	update()
 	{
+
+		rabbit_update(this);
+
+
 		let pointer = this.input.activePointer.positionToCamera(this.cameras.main);
 		if ( this.is_down )
 		{
@@ -122,37 +127,13 @@ class play_game extends Phaser.Scene
 		}
 		// console.log(this.input.x+":::::"+this.input.y);
 
-		// console.log(this.player.y);
-		// if ( this.player.y > 560 )
+		// console.log(this.rabbit.y);
+		// if ( this.rabbit.y > 560 )
 		// {
 		// 	console.log("lose");
 		// 	this.lose();
 		// }
-		if ( this.carrot.x === -10 )
-		{
-			this.player.setVelocityX(0);
-		}
-		else if ( this.carrot.x - 45 > this.player.x )
-		{
-			this.player.setVelocityX(250);
 
-			// this.player.anims.play('left', true);
-		}
-		else if ( this.carrot.x + 45 < this.player.x )
-		{
-			this.player.setVelocityX(-240);
-
-			// this.player.anims.play('right', true);
-		}
-
-		if ( this.carrot.y === -10 )
-		{
-			// this.player.setVelocityY(0);
-		}
-		else if ( this.carrot.y + (this.game.config.height * 35 / 100) < this.player.y && this.player.body.touching.down )
-		{
-			this.player.setVelocityY(-330);
-		}
 	}
 }
 
